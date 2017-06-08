@@ -26,7 +26,7 @@ for i in categories['categories']:
         r = requests.get(url, headers=headers);
         rest = r.json();
         for loc in rest['restaurants']:
-            fg[index].add_child(folium.Marker(location=[loc['restaurant']['location']['latitude'],loc['restaurant']['location']['longitude']], popup=loc['restaurant']['name'] + 'URL : ' + loc['restaurant']['url'], icon=folium.Icon(color='red')));
+            fg[index].add_child(folium.Marker(location=[loc['restaurant']['location']['latitude'],loc['restaurant']['location']['longitude']], popup=loc['restaurant']['name'], icon=folium.Icon(color='red')));
     map.add_child(fg[index]);
     index=index+1;
 
