@@ -8,3 +8,8 @@ Get a Zomato API key from https://developers.zomato.com/api and replace it in th
 Make a copy of key.py.
 
 Execute the map.py file, enter the location.
+
+Requirements :
+folium : pip install folium
+json : pip install simplejson
+requests : pip install requests
