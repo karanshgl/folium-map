@@ -15,7 +15,10 @@ r = requests.get(url, headers=headers)
 location = r.json();
 fg=[];
 index=0;
-map=folium.Map(location=[28.7041,77.1025],zoom_start=14);
+url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + search.replace(" ", "%20");
+r = requests.get(url);
+geo = r.json();
+map=folium.Map(location=[geo['results'][0]['geometry']['location']['lat'],geo['results'][0]['geometry']['location']['lng']],zoom_start=16);
 for i in categories['categories']:
     fg.append(folium.FeatureGroup(name=i['categories']['name']))
     for l in location['location_suggestions']:
