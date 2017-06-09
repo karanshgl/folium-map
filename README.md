@@ -22,8 +22,6 @@ pip install -r requirements.txt
 ❯ python map.py
 Enter the Location > Defence Colony
 ```
-<img src="http://i.imgur.com/yi2kYou.png">
-
-<img src="http://i.imgur.com/C4alYPY.png">
-
-<img src="http://i.imgur.com/Q2HRDua.png">
+<img src="http://i.imgur.com/yi2kYou.png" width="400">
+<img src="http://i.imgur.com/C4alYPY.png" width="400">
+<img src="http://i.imgur.com/Q2HRDua.png" width="400">
