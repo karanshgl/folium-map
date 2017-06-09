@@ -9,7 +9,9 @@ import os
 
 CONFIG = configparser.ConfigParser()
 CONFIG.read('config.ini')
-zomato = CONFIG['keys']['zomato']
+KEYS = CONFIG['keys']
+
+zomato = KEYS['zomato'] if KEYS['zomato'] != '' else exit('No Zomato keys')
 
 EP = 'https://developers.zomato.com/api/v2.1/{}' # endpoint for Zomato
 EP_MAPS = 'https://maps.googleapis.com/maps/api/geocode/json' # endpoint for Google Maps
