@@ -1,35 +1,78 @@
-import folium
+from folium import Map, FeatureGroup, Marker, Icon, LayerControl
 import requests
-import json
-import key
+import configparser
+import os
 
-search = input("Enter the Location ");
+####################################
+############# CONSTANTS ############
+####################################
 
-url = 'https://developers.zomato.com/api/v2.1/categories'
-headers = {'user-key': key.key}
-r = requests.get(url, headers=headers)
-categories=r.json();
+CONFIG = configparser.ConfigParser()
+CONFIG.read('config.ini')
+KEYS = CONFIG['keys']
 
-url= 'https://developers.zomato.com/api/v2.1/locations?query=' + search.replace(" ", "%20");
-r = requests.get(url, headers=headers)
-location = r.json();
-fg=[];
-index=0;
-url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + search.replace(" ", "%20");
-r = requests.get(url);
-geo = r.json();
-map=folium.Map(location=[geo['results'][0]['geometry']['location']['lat'],geo['results'][0]['geometry']['location']['lng']],zoom_start=16);
+zomato = KEYS['zomato'] if KEYS['zomato'] != '' else exit('No Zomato keys')
+
+EP = 'https://developers.zomato.com/api/v2.1/{}' # endpoint for Zomato
+EP_MAPS = 'https://maps.googleapis.com/maps/api/geocode/json' # endpoint for Google Maps
+HEADER = {'user-key': zomato} # Headers constant
+
+fg = [] # Feature Group for Folium
+QUERY = input("Enter the Location > ") # Query by user
+
+
+####################################
+########### HTTP Requests ##########
+####################################
+
+
+r = requests.get(EP.format('categories'), headers=HEADER)
+categories = r.json()
+r = requests.get(EP.format('locations'), headers=HEADER, params={'query': QUERY})
+location = r.json()
+
+r = requests.get(EP_MAPS, params={'address': QUERY})
+geo = r.json()
+geo = geo['results'][0]['geometry']['location']
+
+
+
+####################################
+########### Folium Logic ###########
+####################################
+
+map = Map(location=[geo['lat'], geo['lng']], zoom_start=16)
+index = 0
+
 for i in categories['categories']:
-    fg.append(folium.FeatureGroup(name=i['categories']['name']))
+    fg.append(FeatureGroup(name=i['categories']['name']))
+
     for l in location['location_suggestions']:
-        url = 'https://developers.zomato.com/api/v2.1/search?entity_id=' +str(l['entity_id']) + '&entity_type=' +l['entity_type'] + '&category=' + str(i['categories']['id']);
-        r = requests.get(url, headers=headers);
-        rest = r.json();
+
+        param = {
+        'entity_id': l['entity_id'],
+        'entity_type': l['entity_type'],
+        'category': i['categories']['id']
+        }
+
+        r = requests.get(EP.format('search'), headers=HEADER, params=param)
+        rest = r.json()
+
         for loc in rest['restaurants']:
-            fg[index].add_child(folium.Marker(location=[loc['restaurant']['location']['latitude'],loc['restaurant']['location']['longitude']], popup=loc['restaurant']['name'], icon=folium.Icon(color='red')));
-    map.add_child(fg[index]);
-    index=index+1;
+            loc = loc['restaurant']
+            marker = Marker(
+            location=[loc['location']['latitude'],loc['location']['longitude']],
+            popup=loc['name'],
+            icon=Icon(color='red'))
+
+            fg[index].add_child(marker)
+
+    map.add_child(fg[index])
+    index += 1
 
 
-map.add_child(folium.LayerControl());
-map.save("./rendered_html/Map1.html");
+if not os.path.exists('rendered_html'):
+    os.mkdir('rendered_html')
+
+map.add_child(LayerControl())
+map.save("./rendered_html/{}.html".format(QUERY))
