@@ -18,6 +18,9 @@ pip install -r requirements.txt
 
 ---
 
+### Example 
+
+
 ```
 ❯ python map.py
 Enter the Location > Defence Colony
