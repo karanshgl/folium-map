@@ -1,16 +1,16 @@
 # folium-map
 
 A python script using folium to save an HTML Output having a map with all the restuarants marked near the input location.
+
 The data is extracted through Zomato API.The restuarants can be filtered using layer control on the right side of the HTML page.
 
-Get a Zomato API key from https://developers.zomato.com/api and add it in the config.ini file.
+Get a Zomato API key from [here](https://developers.zomato.com/api) and add it in the `config.ini` file.
 
-Execute the map.py file, enter the location.
+Execute the `map.py` file, enter the location.
 
-Requirements :
+### Install Requirements
 
-folium : pip install folium
+```
+pip install -r requirements.txt
+```
 
-json : pip install simplejson
-
-requests : pip install requests
